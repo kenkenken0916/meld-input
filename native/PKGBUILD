@@ -1,0 +1,25 @@
+pkgname=fcitx5-meld
+pkgver=0.5.1
+pkgrel=1
+pkgdesc='Meld Input native smart Zhuyin and English input method for Fcitx5'
+arch=('x86_64' 'aarch64')
+url='https://github.com/kenkenken0916/meld-input'
+license=('MIT')
+depends=('fcitx5' 'librime' 'rime-bopomofo' 'rime-terra-pinyin')
+makedepends=('cmake' 'ninja' 'pkgconf')
+source=()
+sha256sums=()
+
+build() {
+  cmake -S "${startdir}" -B build -G Ninja \
+    -DCMAKE_BUILD_TYPE=None \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCMAKE_INSTALL_LIBDIR=lib
+  cmake --build build
+}
+
+package() {
+  DESTDIR="${pkgdir}" cmake --install build
+  install -Dm644 "${startdir}/../LICENSE" \
+    "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+}

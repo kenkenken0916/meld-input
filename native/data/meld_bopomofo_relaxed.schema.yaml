@@ -1,0 +1,24 @@
+# Rime schema
+# encoding: utf-8
+
+__include: meld_bopomofo.schema:/
+
+schema:
+  schema_id: meld_bopomofo_relaxed
+  name: 融注音（寬鬆）
+  version: "0.5.1"
+  author:
+    - Meld Input contributors
+  description: |
+    純注音模式使用。保留 Rime 的不完整注音與縮寫匹配。
+
+speller:
+  algebra:
+    __patch:
+      - zhuyin:/pinyin_to_zhuyin
+      - zhuyin:/abbreviation
+      - zhuyin:/keymap_bopomofo
+
+translator:
+  dictionary: terra_pinyin
+  prism: meld_bopomofo_relaxed

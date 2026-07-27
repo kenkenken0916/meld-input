@@ -1,0 +1,13 @@
+name: Test
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  core:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run portable tests
+        run: ./scripts/test.sh

@@ -1,0 +1,11 @@
+[Addon]
+Name=Meld Input
+Name[zh_TW]=融輸入法
+Comment=Native smart Zhuyin and English input method
+Comment[zh_TW]=原生智慧注音／英文混合輸入法
+Category=InputMethod
+Version=@PROJECT_VERSION@
+Library=meld
+Type=SharedLibrary
+OnDemand=True
+Configurable=False

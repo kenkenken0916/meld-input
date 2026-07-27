@@ -1,0 +1,125 @@
+# Rime schema
+# encoding: utf-8
+
+__include: bopomofo_tw.schema:/
+
+schema:
+  schema_id: smart_bopomofo
+  name: Moji 智慧注音
+  version: "0.4.2"
+  author:
+    - Moji Master contributors
+  description: |
+    大千注音與英文 raw-key 雙路判斷。
+    完整含聲調的注音直接走中文；其餘由中英規則判斷。
+    右 Shift 切換 Latin 純英文。
+  dependencies:
+    - stroke
+
+switches:
+  - name: ascii_mode
+    reset: 0
+    states: [ 中文輸入中, Latin 純英文 ]
+  - name: smart_english
+    reset: 1
+    states: [ ○ 智慧切換, ● 智慧切換 ]
+  - options: [ punct_auto, punct_zh, punct_en ]
+    reset: 0
+    states: [ 自動標點, 中文標點, 英文標點 ]
+
+engine:
+  processors:
+    - ascii_composer
+    - lua_processor@*smart_english_commit
+    - recognizer
+    - key_binder
+    - speller
+    - punctuator
+    - selector
+    - navigator
+    - fluency_editor
+  segmentors:
+    - ascii_segmentor
+    - matcher
+    - abc_segmentor
+    - punct_segmentor
+    - fallback_segmentor
+  translators:
+    - punct_translator
+    - table_translator@custom_phrase
+    - reverse_lookup_translator
+    - lua_translator@*smart_english
+    - script_translator
+  filters:
+    - simplifier@taiwan_fixed
+    - uniquifier
+
+ascii_composer:
+  good_old_caps_lock: true
+  switch_key:
+    Caps_Lock: clear
+    Shift_L: noop
+    Shift_R: commit_code
+    Control_L: noop
+    Control_R: noop
+
+key_binder:
+  import_preset: default
+  bindings:
+    - { when: has_menu, accept: comma, send: comma }
+    - { when: has_menu, accept: period, send: period }
+    - { when: has_menu, accept: minus, send: minus }
+    - { when: paging, accept: minus, send: Page_Up }
+    - { when: has_menu, accept: equal, send: Page_Down }
+    - { when: has_menu, accept: Shift+exclam, send: KP_1 }
+    - { when: has_menu, accept: Shift+at, send: KP_2 }
+    - { when: has_menu, accept: Shift+numbersign, send: KP_3 }
+    - { when: has_menu, accept: Shift+dollar, send: KP_4 }
+    - { when: has_menu, accept: Shift+percent, send: KP_5 }
+    - { when: has_menu, accept: Shift+asciicircum, send: KP_6 }
+    - { when: has_menu, accept: Shift+ampersand, send: KP_7 }
+    - { when: has_menu, accept: Shift+asterisk, send: KP_8 }
+    - { when: has_menu, accept: Shift+parenleft, send: KP_9 }
+    - { when: has_menu, accept: Shift+parenright, send: KP_0 }
+
+recognizer:
+  patterns:
+    uppercase: "^[A-Z][-_+.'0-9A-Za-z]*$"
+    url: "^(www[.]|https?:|ftp:|mailto:).*$"
+    email: "^[A-Za-z][-_+.0-9A-Za-z]*@.*$"
+    reverse_lookup: "`[a-z]*'?$"
+
+smart_english:
+  dictionary: smart_english.tsv
+  exact_threshold: 100
+  prefix_min_length: 3
+  prefix_threshold: 250
+  heuristic_min_length: 5
+  structural_min_length: 4
+  structural_threshold: 0.50
+  fuzzy_min_length: 4
+  fuzzy_min_weight: 250
+  auto_commit_min_length: 3
+  show_prefix_candidate: true
+  comment: "〔EN〕"
+
+translator:
+  dictionary: terra_pinyin
+  prism: smart_bopomofo
+
+# 平時固定半形；常用標點的全／半形改放進候選清單，以 ↓ 選擇。
+punctuator:
+  half_shape:
+    __include: bopomofo.schema:/punctuator/half_shape
+    "<": [ "，", "," ]
+    ">": [ "。", "." ]
+    "?": [ "？", "?", "／", "/", "÷" ]
+    ":": [ "：", ":", "；", ";" ]
+    "!": [ "！", "!" ]
+
+# 不放進 F4 選單，固定套用臺灣正體 OpenCC 轉換。
+taiwan_fixed:
+  option_name: taiwan_fixed
+  opencc_config: t2tw.json
+  tips: none
+  excluded_types: [ reverse_lookup ]

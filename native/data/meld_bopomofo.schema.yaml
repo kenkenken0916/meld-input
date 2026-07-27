@@ -1,0 +1,74 @@
+# Rime schema
+# encoding: utf-8
+
+__include: bopomofo_tw.schema:/
+
+schema:
+  schema_id: meld_bopomofo
+  name: 融注音
+  version: "0.5.1"
+  author:
+    - Meld Input contributors
+  description: |
+    Meld Input 的臺灣大千注音後端。
+    智慧中英文模式由原生 Fcitx5 addon 管理，不放進 Rime switcher。
+
+switches:
+  - name: ascii_mode
+    reset: 0
+    states: [ 中文輸入, 純英文 ]
+  - options: [ punct_auto, punct_zh, punct_en ]
+    reset: 0
+    states: [ 自動標點, 中文標點, 英文標點 ]
+
+engine:
+  processors:
+    - ascii_composer
+    - recognizer
+    - key_binder
+    - speller
+    - punctuator
+    - selector
+    - navigator
+    - fluency_editor
+  segmentors:
+    - ascii_segmentor
+    - matcher
+    - abc_segmentor
+    - punct_segmentor
+    - fallback_segmentor
+  translators:
+    - punct_translator
+    - table_translator@custom_phrase
+    - reverse_lookup_translator
+    - script_translator
+  filters:
+    - simplifier@taiwan_fixed
+    - uniquifier
+
+speller:
+  # 智慧模式刻意不載入縮寫規則。
+  # 每個音節必須完整；不完整注音只留給 relaxed schema。
+  algebra:
+    __patch:
+      - zhuyin:/pinyin_to_zhuyin
+      - zhuyin:/keymap_bopomofo
+
+translator:
+  dictionary: terra_pinyin
+  prism: meld_bopomofo
+
+punctuator:
+  half_shape:
+    __include: bopomofo.schema:/punctuator/half_shape
+    "<": [ "，", "," ]
+    ">": [ "。", "." ]
+    "?": [ "？", "?", "／", "/", "÷" ]
+    ":": [ "：", ":", "；", ";" ]
+    "!": [ "！", "!" ]
+
+taiwan_fixed:
+  option_name: taiwan_fixed
+  opencc_config: t2tw.json
+  tips: none
+  excluded_types: [ reverse_lookup ]
