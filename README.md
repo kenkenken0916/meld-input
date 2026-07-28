@@ -1,6 +1,6 @@
 # Meld Input／融輸入法
 
-給 Arch Linux + KDE Plasma 使用的智慧注音／英文混合輸入法。
+給 Arch Linux + KDE Plasma 使用的智慧注音／英文混合輸入法。（其他版我還沒測）
 
 原始碼、問題回報與版本下載：
 [github.com/kenkenken0916/meld-input](https://github.com/kenkenken0916/meld-input)
@@ -10,17 +10,14 @@
 - `native/`：新的原生 Fcitx5 C++ addon，顯示名稱為「Meld Input／融輸入法」。
 - `rime/`：舊的 Moji Master Rime + Lua 原型，保留作為演算法參考與 fallback。
 
-新安裝請優先使用原生 addon。原生版的智慧切換是 Fcitx Action，選單只顯示目前狀態：
-
-- `● 智慧切換`
-- `○ 智慧切換`
-
-點擊後原地切換，不會再出現 `目前狀態 → 下一狀態`。
+新安裝請優先使用原生 addon。
 
 ## 原生版安裝（Arch Linux）
 
 可從 [GitHub Releases](https://github.com/kenkenken0916/meld-input/releases)
 下載最新版 `meld-input-*.tar.gz`，解壓後執行：
+
+由於是mac開發 被塞了很多垃圾 請忽略謝謝
 
 解壓縮後，在專案資料夾執行：
 
@@ -29,7 +26,8 @@ sudo pacman -S --needed base-devel cmake ninja pkgconf \
   fcitx5 librime rime-bopomofo rime-terra-pinyin
 ./scripts/build-native-arch.sh
 ```
-
+- 其他package Managers 請自己換一下
+  
 第一次測試前：
 
 1. 從 `fcitx5-configtool` 的目前輸入法群組移除舊的「Rime」。
@@ -44,8 +42,8 @@ singleton；測試時不要同時載入兩個 addon。這不需要移除
 
 | 操作 | 結果 |
 |---|---|
-| 點擊 `●／○ 智慧切換` | 只切換智慧中文與純注音 |
-| 點擊 `中／EN` 或右 Shift | 只切換中文與純英文 |
+| 點擊 `●／○ 智慧切換` | 切換智慧中文與純注音 |
+| 點擊 `中／EN` 或右 Shift | 切換中文與純英文 |
 | 完整注音 + 聲調 | 顯示並提交臺灣正體中文候選 |
 | 一聲注音 + Space | 先加入一聲，再由中文候選確認 |
 | 英文 + Space／Enter | 原樣提交英文 |
